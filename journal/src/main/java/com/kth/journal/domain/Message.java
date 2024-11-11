@@ -1,11 +1,13 @@
 package com.kth.journal.domain;
 
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 
 @Entity
 public class Message {
 
-    private Account patientAccount;
+    @EmbeddedId
+    private MessageId id;
 
     private Account senderAccount;
 
@@ -14,22 +16,34 @@ public class Message {
     public Message() {
     }
 
-    public Message(String message, Account patientAccount, Account senderAccount) {
-        this.message = message;
-        this.patientAccount = patientAccount;
+    public Message(MessageId messageId, Account patientAccount, String message) {
+        this.id = messageId;
         this.senderAccount = senderAccount;
+        this.message = message;
+    }
+
+    public MessageId getId() {
+        return id;
+    }
+
+    public Account getSenderAccount() {
+        return senderAccount;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public Account getSenderAccount() {
-        return patientAccount;
+    public void setId(MessageId messageId) {
+        this.id = messageId;
     }
 
-    public Account getPatientAccount() {
-        return senderAccount;
+    public void setSenderAccount(Account senderAccount) {
+        this.senderAccount = senderAccount;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }
