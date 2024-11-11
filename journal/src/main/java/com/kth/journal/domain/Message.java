@@ -16,7 +16,7 @@ public class Message {
     public Message() {
     }
 
-    public Message(MessageId messageId, Account patientAccount, String message) {
+    public Message(MessageId messageId, Account senderAccount, String message) {
         this.id = messageId;
         this.senderAccount = senderAccount;
         this.message = message;
