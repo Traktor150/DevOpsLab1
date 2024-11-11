@@ -5,28 +5,32 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-
 @Entity
-public class User {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String name;
     private String password;
     private String email;
 
-    // Constructors
-    public User() {}
+    private String role;
 
-    public User(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
+    private String phone;
+
+    public Account() {
     }
 
-    // Getters and Setters
+    public Account(String username, String password, String email, String role, String phone) {
+        this.name = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.phone = phone;
+    }
+
     public Long getId() {
         return id;
     }
@@ -35,12 +39,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String username) {
+        this.name = username;
     }
 
     public String getPassword() {
@@ -58,4 +62,21 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
 }
