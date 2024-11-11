@@ -1,9 +1,12 @@
 package com.kth.journal.domain;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Account {
@@ -15,10 +18,14 @@ public class Account {
     private String name;
     private String password;
     private String email;
-
     private String role;
-
     private String phone;
+
+    @OneToMany(mappedBy = "senderAccount")
+    private List<Message> sentMessages;
+
+    @OneToMany(mappedBy = "id.conversation")
+    private List<Message> conversations;
 
     public Account() {
     }
@@ -77,6 +84,22 @@ public class Account {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public List<Message> getSentMessages() {
+        return sentMessages;
+    }
+
+    public void setSentMessages(List<Message> sentMessages) {
+        this.sentMessages = sentMessages;
+    }
+
+    public List<Message> getConversations() {
+        return conversations;
+    }
+
+    public void setConversations(List<Message> conversations) {
+        this.conversations = conversations;
     }
 
 }

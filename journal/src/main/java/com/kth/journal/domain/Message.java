@@ -2,6 +2,8 @@ package com.kth.journal.domain;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Message {
@@ -9,6 +11,7 @@ public class Message {
     @EmbeddedId
     private MessageId id;
 
+    @ManyToOne
     private Account senderAccount;
 
     private String message;
