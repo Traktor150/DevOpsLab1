@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DemoControler {
 
-    @GetMapping("/demo")
+    @GetMapping("/api/auth/demo")
     public String demo() {
         return "Hello from the demo controller!";
     }
