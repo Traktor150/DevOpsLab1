@@ -19,7 +19,7 @@ public class Account {
     private String password;
     private String email;
     private String role;
-    private String phone;
+    private String SSN;
 
     @OneToMany(mappedBy = "senderAccount")
     private List<Message> sentMessages;
@@ -30,12 +30,12 @@ public class Account {
     public Account() {
     }
 
-    public Account(String username, String password, String email, String role, String phone) {
+    public Account(String username, String password, String email, String role, String SSN) {
         this.name = username;
         this.password = password;
         this.email = email;
         this.role = role;
-        this.phone = phone;
+        this.SSN = SSN;
     }
 
     public Long getId() {
@@ -78,12 +78,12 @@ public class Account {
         this.role = role;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getSSN() {
+        return SSN;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setSSN(String SSN) {
+        this.SSN = SSN;
     }
 
     public List<Message> getSentMessages() {
