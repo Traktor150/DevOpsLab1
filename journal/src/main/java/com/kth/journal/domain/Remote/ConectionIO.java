@@ -5,12 +5,14 @@ import java.util.stream.Collectors;
 
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Practitioner;
+import org.springframework.stereotype.Service;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 
 // TODO: throw exception if patient not found
 // TODO: handle pagination
+@Service
 public class ConectionIO {
 
     private final FhirContext fhirContext;

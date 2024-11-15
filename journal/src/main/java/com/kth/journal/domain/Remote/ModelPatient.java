@@ -34,10 +34,18 @@ public class ModelPatient {
         this.state = patient.getAddressFirstRep().getState();
         this.postalCode = patient.getAddressFirstRep().getPostalCode();
         this.country = patient.getAddressFirstRep().getCountry();
-        this.securityNumber = patient.getIdentifierFirstRep().getValue();
+        this.securityNumber = patient.getIdentifier().stream()
+                .filter(identifier -> "PN".equals(identifier.getType().getCodingFirstRep().getCode()))
+                .findFirst()
+                .map(identifier -> identifier.getValue())
+                .orElse(null);
         this.familyName = patient.getNameFirstRep().getFamily();
         this.givenName = patient.getNameFirstRep().getGivenAsSingleString();
         this.telecom = patient.getTelecomFirstRep().getValue();
+        this.gender = patient.getGender().getDisplay();
+        this.birthDate = patient.getBirthDate();
+        this.maritalStatus = patient.getMaritalStatus().getText();
+        this.language = patient.getCommunicationFirstRep().getLanguage().getText();
     }
 
     public String getId() {

@@ -3,6 +3,7 @@ package com.kth.journal.Controlers;
 import com.kth.journal.Dto.AuthResponse;
 import com.kth.journal.Dto.LoginRequest;
 import com.kth.journal.Dto.SignUpRequest;
+import com.kth.journal.Dto.SignUpRequestPatient;
 import com.kth.journal.Security.SecurityConfig;
 import com.kth.journal.Services.UserService;
 import com.kth.journal.Utils.JwtUtil;
@@ -40,21 +41,53 @@ public class AuthController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@Valid @RequestBody SignUpRequest signUpRequest) throws Exception {
+    public ResponseEntity<String> signUp(@Valid @RequestBody SignUpRequestPatient signUpRequest) throws Exception {
         if (userService.hasUserWithEmail(signUpRequest.getEmail())) {
             throw new Exception(String.format("Email %s is already been used", signUpRequest.getEmail()));
         }
 
-        Account user = userService.saveUser(createUser(signUpRequest));
+        Account user = userService.saveUser(createUser(signUpRequest, SecurityConfig.PATIENT));
         return ResponseEntity.ok("User registered successfully");
     }
 
-    private Account createUser(SignUpRequest signUpRequest) {
+    private Account createUser(SignUpRequestPatient signUpRequest, String role) {
         Account user = new Account();
         user.setPassword(signUpRequest.getPassword());
         user.setName(signUpRequest.getName());
         user.setEmail(signUpRequest.getEmail());
-        user.setRole(SecurityConfig.PATIENT);
+        user.setSSN(signUpRequest.getSSN());
+        user.setRole(role);
+        return user;
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/signup/staff")
+    public ResponseEntity<String> signUpStaff(@Valid @RequestBody SignUpRequest signUpRequest) throws Exception {
+        if (userService.hasUserWithEmail(signUpRequest.getEmail())) {
+            throw new Exception(String.format("Email %s is already been used", signUpRequest.getEmail()));
+        }
+
+        Account user = userService.saveUser(createUser(signUpRequest, SecurityConfig.STAFF));
+        return ResponseEntity.ok("User registered successfully");
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/signup/doctor")
+    public ResponseEntity<String> signUpDoctor(@Valid @RequestBody SignUpRequest signUpRequest) throws Exception {
+        if (userService.hasUserWithEmail(signUpRequest.getEmail())) {
+            throw new Exception(String.format("Email %s is already been used", signUpRequest.getEmail()));
+        }
+
+        Account user = userService.saveUser(createUser(signUpRequest, SecurityConfig.DOCTOR));
+        return ResponseEntity.ok("User registered successfully");
+    }
+
+    private Account createUser(SignUpRequest signUpRequest, String role) {
+        Account user = new Account();
+        user.setPassword(signUpRequest.getPassword());
+        user.setName(signUpRequest.getName());
+        user.setEmail(signUpRequest.getEmail());
+        user.setRole(role);
         return user;
     }
 }
