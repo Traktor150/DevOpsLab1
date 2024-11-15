@@ -33,7 +33,7 @@ public class AuthController {
         if (userOptional.isPresent()) {
             Account user = userOptional.get();
             String token = jwtUtil.generateToken(user.getEmail());
-            return ResponseEntity.ok(new AuthResponse(user.getEmail(), user.getName(), user.getRole(), token));
+            return ResponseEntity.ok(new AuthResponse(user.getId(), user.getEmail(), user.getName(), user.getRole(), token));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }

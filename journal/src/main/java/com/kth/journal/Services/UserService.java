@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -34,5 +36,17 @@ public class UserService implements UserServiceInterface {
     @Override
     public Optional<Account> validUsernameAndPassword(String email, String password) {
         return getUserByEmail(email).filter(user -> passwordEncoder.matches(password, user.getPassword()));
+    }
+
+    @Override
+    public List<Account> getRecipients(String currentUserEmail) {
+        Optional<Account> optionalUser = getUserByEmail(currentUserEmail);
+        if(optionalUser.isEmpty()) throw new RuntimeException("User doesn't exists");
+
+        Account user = optionalUser.get();
+
+        if(Objects.equals(user.getRole(), "PATIENT")) return accRepository.findByRoleIn(List.of("DOCTOR", "STAFF"));
+
+        return accRepository.findByRoleIn(List.of("PATIENT"));
     }
 }
