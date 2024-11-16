@@ -25,13 +25,11 @@ public class JournalController {
 
     @GetMapping("/patients")
     public PatientsResponse getPatients() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (principal instanceof UserDetails) {
+        if (currentUserEmail != null) {
 
-            String userEmail = ((UserDetails) principal).getUsername();
-
-            PatientsResponse res = new PatientsResponse(journalService.getPatients(userEmail));
+            PatientsResponse res = new PatientsResponse(journalService.getPatients(currentUserEmail));
 
             return res;
         } else

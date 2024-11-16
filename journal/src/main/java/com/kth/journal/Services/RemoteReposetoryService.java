@@ -1,5 +1,6 @@
 package com.kth.journal.Services;
 
+import com.kth.journal.Security.SecurityConfig;
 import com.kth.journal.Services.Interfaces.RemoteReposetoryServiceInterface;
 import com.kth.journal.domain.Account;
 import com.kth.journal.domain.Remote.ConectionIO;
@@ -13,6 +14,7 @@ import com.kth.journal.domain.Remote.ModelPractitioner;
 
 import lombok.RequiredArgsConstructor;
 
+import java.security.Security;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,8 +51,15 @@ public class RemoteReposetoryService implements RemoteReposetoryServiceInterface
     }
 
     public List<ModelPatient> getPatients(String requsterEmail) {
-        if (!userService.userIsDoctor(requsterEmail)) {
-            throw new RuntimeException("User is not a doctor");
+        Optional<Account> user = userService.getUserByEmail(requsterEmail);
+
+        if (user.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        // check if user is not a patient
+        if (user.get().getRole() == SecurityConfig.PATIENT) {
+            throw new RuntimeException("User does not have permission to access this resource");
         }
 
         List<ModelPatient> patients = conectionIO.getAllPatients();
