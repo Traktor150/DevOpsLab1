@@ -57,7 +57,6 @@ public class RemoteReposetoryService implements RemoteReposetoryServiceInterface
             throw new RuntimeException("User not found");
         }
 
-        // check if user is not a patient
         if (user.get().getRole() == SecurityConfig.PATIENT) {
             throw new RuntimeException("User does not have permission to access this resource");
         }
@@ -67,12 +66,24 @@ public class RemoteReposetoryService implements RemoteReposetoryServiceInterface
         return patients;
     }
 
-    public ModelPatient getPatient(String id) {
-        ModelPatient patient = conectionIO.getPatientById(id);
-        return patient;
+    public ModelPatient getPatient(String id, String requsterEmail) {
+        Optional<Account> user = userService.getUserByEmail(requsterEmail);
+
+        if (user.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        // check if user is not a patient
+        if (user.get().getRole() == SecurityConfig.PATIENT) {
+            throw new RuntimeException("User does not have permission to access this resource");
+        }
+
+        return null;
     }
 
-    public List<ModelPractitioner> getPractitioners() {
-        return null;
+    public ModelPractitioner getPractitioner(String email) {
+        ModelPractitioner practitioner = conectionIO.getPractitionerById(email);
+
+        return practitioner;
     }
 }

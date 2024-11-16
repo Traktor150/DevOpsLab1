@@ -25,8 +25,8 @@ public interface RemoteReposetoryServiceInterface {
 
     public List<ModelPatient> getPatients(String requsterEmail);
 
-    public ModelPatient getPatient(String id);
+    public ModelPatient getPatient(String id, String requsterEmail);
 
-    public List<ModelPractitioner> getPractitioners();
+    public ModelPractitioner getPractitioner(String email);
 
 }
