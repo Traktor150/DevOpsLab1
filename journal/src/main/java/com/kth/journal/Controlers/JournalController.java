@@ -41,14 +41,12 @@ public class JournalController {
 
     @GetMapping("/patient/{id}")
     public PatientResponse getPatient(@PathVariable String id) {
-        // Object principal =
-        // SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        // if (principal instanceof UserDetails) {
-
-        // String userEmail = ((UserDetails) principal).getUsername();
-
-        return new PatientResponse(journalService.getPatient(id));
-
+        if (currentUserEmail != null) {
+            return new PatientResponse(journalService.getPatient(id, currentUserEmail));
+        } else {
+            throw new RuntimeException("User is not authenticated");
+        }
     }
 }
