@@ -17,8 +17,6 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String hapiId;
-
     private String name;
     private String password;
     private String email;
@@ -110,14 +108,6 @@ public class Account {
 
     public void setConversations(List<Message> conversations) {
         this.conversations = conversations;
-    }
-
-    public String getHapiId() {
-        return hapiId;
-    }
-
-    public void setHapiId(String hapiId) {
-        this.hapiId = hapiId;
     }
 
 }
