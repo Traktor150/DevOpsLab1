@@ -2,6 +2,8 @@ package com.kth.journal.domain;
 
 import java.util.List;
 
+import org.hl7.fhir.r4.model.Consent.provisionActorComponent;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,6 +17,8 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String hapiId;
+
     private String name;
     private String password;
     private String email;
@@ -26,6 +30,12 @@ public class Account {
 
     @OneToMany(mappedBy = "id.conversation")
     private List<Message> conversations;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Note> notes;
+
+    @OneToMany(mappedBy = "author")
+    private List<Note> writenNotes;
 
     public Account() {
     }
@@ -100,6 +110,14 @@ public class Account {
 
     public void setConversations(List<Message> conversations) {
         this.conversations = conversations;
+    }
+
+    public String getHapiId() {
+        return hapiId;
+    }
+
+    public void setHapiId(String hapiId) {
+        this.hapiId = hapiId;
     }
 
 }
