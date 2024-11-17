@@ -2,13 +2,7 @@ package com.kth.journal.domain;
 
 import java.util.List;
 
-import org.hl7.fhir.r4.model.Consent.provisionActorComponent;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 @Entity
 public class Account {
@@ -21,7 +15,6 @@ public class Account {
     private String password;
     private String email;
     private String role;
-    private String SSN;
 
     @OneToMany(mappedBy = "senderAccount")
     private List<Message> sentMessages;
@@ -29,21 +22,20 @@ public class Account {
     @OneToMany(mappedBy = "id.conversation")
     private List<Message> conversations;
 
-    @OneToMany(mappedBy = "patient")
-    private List<Note> notes;
+    @OneToOne(mappedBy = "account")
+    private Patient patient;
 
-    @OneToMany(mappedBy = "author")
-    private List<Note> writenNotes;
+    @OneToOne(mappedBy = "account")
+    private Practitioner practitioner;
 
     public Account() {
     }
 
-    public Account(String username, String password, String email, String role, String SSN) {
+    public Account(String username, String password, String email, String role) {
         this.name = username;
         this.password = password;
         this.email = email;
         this.role = role;
-        this.SSN = SSN;
     }
 
     public Long getId() {
@@ -86,14 +78,6 @@ public class Account {
         this.role = role;
     }
 
-    public String getSSN() {
-        return SSN;
-    }
-
-    public void setSSN(String SSN) {
-        this.SSN = SSN;
-    }
-
     public List<Message> getSentMessages() {
         return sentMessages;
     }
@@ -110,4 +94,19 @@ public class Account {
         this.conversations = conversations;
     }
 
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public Practitioner getPractitioner() {
+        return practitioner;
+    }
+
+    public void setPractitioner(Practitioner practitioner) {
+        this.practitioner = practitioner;
+    }
 }

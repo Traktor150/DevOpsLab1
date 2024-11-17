@@ -14,7 +14,4 @@ public class SignUpRequestPatient {
 
     @Email
     private String email;
-
-    @NotBlank
-    private String SSN;
 }

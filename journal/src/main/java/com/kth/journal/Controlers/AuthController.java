@@ -5,6 +5,8 @@ import com.kth.journal.Dto.LoginRequest;
 import com.kth.journal.Dto.SignUpRequest;
 import com.kth.journal.Dto.SignUpRequestPatient;
 import com.kth.journal.Security.SecurityConfig;
+import com.kth.journal.Services.PatientService;
+import com.kth.journal.Services.PractitionerService;
 import com.kth.journal.Services.UserService;
 import com.kth.journal.Utils.JwtUtil;
 import com.kth.journal.domain.Account;
@@ -23,6 +25,8 @@ import java.util.Optional;
 public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final PatientService patientService;
+    private final PractitionerService practitionerService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -47,6 +51,9 @@ public class AuthController {
         }
 
         Account user = userService.saveUser(createUser(signUpRequest, SecurityConfig.PATIENT));
+
+        patientService.createPatient(user.getId());
+
         return ResponseEntity.ok("User registered successfully");
     }
 
@@ -55,7 +62,6 @@ public class AuthController {
         user.setPassword(signUpRequest.getPassword());
         user.setName(signUpRequest.getName());
         user.setEmail(signUpRequest.getEmail());
-        user.setSSN(signUpRequest.getSSN());
         user.setRole(role);
         return user;
     }
@@ -68,6 +74,9 @@ public class AuthController {
         }
 
         Account user = userService.saveUser(createUser(signUpRequest, SecurityConfig.STAFF));
+
+        practitionerService.createPractitioner(user.getId());
+
         return ResponseEntity.ok("User registered successfully");
     }
 
@@ -79,6 +88,9 @@ public class AuthController {
         }
 
         Account user = userService.saveUser(createUser(signUpRequest, SecurityConfig.DOCTOR));
+
+        practitionerService.createPractitioner(user.getId());
+
         return ResponseEntity.ok("User registered successfully");
     }
 

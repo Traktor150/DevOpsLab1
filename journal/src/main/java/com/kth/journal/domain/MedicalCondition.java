@@ -5,13 +5,14 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-public class Note {
+public class MedicalCondition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String content;
-    private Date createdAt;
+    private String name;
+    private String description;
+    private Date diagnosedAt;
 
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
@@ -19,7 +20,7 @@ public class Note {
 
     @ManyToOne
     @JoinColumn(name = "practitioner_id", nullable = false)
-    private Practitioner practitioner; // Skapare av noteringen
+    private Practitioner practitioner;
 
     public Long getId() {
         return id;
@@ -29,20 +30,28 @@ public class Note {
         this.id = id;
     }
 
-    public String getContent() {
-        return content;
+    public String getName() {
+        return name;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getDiagnosedAt() {
+        return diagnosedAt;
+    }
+
+    public void setDiagnosedAt(Date diagnosedAt) {
+        this.diagnosedAt = diagnosedAt;
     }
 
     public Patient getPatient() {
