@@ -18,15 +18,6 @@ public class JwtUtil {
 
     private static final long JWT_EXPIRATION = 86400000; // 24 timmar
 
-    public String generateToken(String email) {
-        return Jwts.builder()
-                .subject(email)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
-                .signWith(getSignInKey(), Jwts.SIG.HS256)
-                .compact();
-    }
-
     private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
