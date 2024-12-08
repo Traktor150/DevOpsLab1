@@ -23,6 +23,9 @@ public class Routes {
     @Value("${image.service.url}")
     private String imageServiceUrl;
 
+    @Value("${journal.service.url}")
+    private String journalServiceUrl;
+
     @Bean
     public RouterFunction<ServerResponse> messageServiceRoute() {
         return GatewayRouterFunctions.route("messages_service")
@@ -61,7 +64,7 @@ public class Routes {
     @Bean
     public RouterFunction<ServerResponse> defaultRoute() {
         return GatewayRouterFunctions.route("default_route")
-                .route(RequestPredicates.all(), HandlerFunctions.http("http://localhost:8083"))
+                .route(RequestPredicates.all(), HandlerFunctions.http(journalServiceUrl))
                 .build();
     }
 }
