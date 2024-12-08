@@ -17,6 +17,12 @@ public class Routes {
     @Value("${auth.service.url}")
     private String authServiceUrl;
 
+    @Value("${search.service.url}")
+    private String searchServiceUrl;
+
+    @Value("${image.service.url}")
+    private String imageServiceUrl;
+
     @Bean
     public RouterFunction<ServerResponse> messageServiceRoute() {
         return GatewayRouterFunctions.route("messages_service")
@@ -28,6 +34,27 @@ public class Routes {
     public RouterFunction<ServerResponse> authServiceRoute() {
         return GatewayRouterFunctions.route("auth_service")
                 .route(RequestPredicates.path("/api/auth/**"), HandlerFunctions.http(authServiceUrl))
+                .build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> patientSearchRoute() {
+        return GatewayRouterFunctions.route("patient_search_service")
+                .route(RequestPredicates.path("/api/patient-search/**"), HandlerFunctions.http(searchServiceUrl))
+                .build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> practitionerSearchRoute() {
+        return GatewayRouterFunctions.route("practitioner_search_service")
+                .route(RequestPredicates.path("/api/practitioner-search/**"), HandlerFunctions.http(searchServiceUrl))
+                .build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> imageRoute() {
+        return GatewayRouterFunctions.route("image_service")
+                .route(RequestPredicates.path("/api/images/**"), HandlerFunctions.http(imageServiceUrl))
                 .build();
     }
 
