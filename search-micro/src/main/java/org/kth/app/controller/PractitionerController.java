@@ -1,11 +1,11 @@
 package org.kth.app.controller;
 
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.kth.app.dto.SearchResponse;
 import org.kth.app.service.PractitionerService;
 
 import java.util.List;
@@ -20,8 +20,9 @@ public class PractitionerController {
 
     @GET
     @Path("/by-name")
-    public Response searchByPartialName(@QueryParam("name") String name) {
-        List<SearchResponse> practitioners = practitionerService.searchPractitionersByPartialName(name);
-        return Response.ok(practitioners).build();
+    public Uni<Response> searchByPartialName(@QueryParam("name") String name) {
+        return practitionerService.searchPractitionersByPartialName(name)
+                .collect().asList() // Collect Multi into a List
+                .onItem().transform(practitioners -> Response.ok(practitioners).build());
     }
 }

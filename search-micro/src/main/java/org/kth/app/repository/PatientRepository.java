@@ -1,46 +1,74 @@
 package org.kth.app.repository;
 
-import com.speedment.jpastreamer.application.JPAStreamer;
+import io.smallrye.mutiny.Multi;
+import io.vertx.mutiny.mysqlclient.MySQLPool;
+import io.vertx.mutiny.sqlclient.Row;
+import io.vertx.mutiny.sqlclient.Tuple;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+import org.kth.app.domain.Account;
 import org.kth.app.domain.Patient;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class PatientRepository {
-    @Inject
-    JPAStreamer jpaStreamer; // Inject JPAStreamer
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Inject
+    MySQLPool client; // Reactive MySQL client
 
     // Search for patients by partial name match
-    public List<Patient> findByPartialName(String name) {
-        return jpaStreamer.stream(Patient.class)
-                .filter(patient -> patient.getAccount().getName().toLowerCase().contains(name.toLowerCase()))
-                .collect(Collectors.toList());
+    public Multi<Patient> findByPartialName(String name) {
+        String query = """
+        SELECT p.* FROM patient p
+        JOIN account a ON p.account_id = a.id
+        WHERE LOWER(a.name) LIKE ?
+    """;
+
+        return client.preparedQuery(query)
+                .execute(Tuple.of("%" + name.toLowerCase() + "%"))
+                .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))
+                .onItem().transform(this::mapRowToPatient); // Map rows to Patient objects
     }
 
     // Search for patients by partial email match
-    public List<Patient> findByPartialEmail(String email) {
-        return jpaStreamer.stream(Patient.class)
-                .filter(patient -> patient.getAccount().getEmail().toLowerCase().contains(email.toLowerCase()))
-                .collect(Collectors.toList());
+    public Multi<Patient> findByPartialEmail(String email) {
+        String query = """
+        SELECT p.* FROM patient p
+        JOIN account a ON p.account_id = a.id
+        WHERE LOWER(a.email) LIKE ?
+        """;
+        return client.preparedQuery(query)
+                .execute(Tuple.of("%" + email.toLowerCase() + "%"))
+                .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))
+                .onItem().transform(this::mapRowToPatient); // Map rows to Patient objects
     }
 
     // Search for patients by partial condition name match
-    public List<Patient> findByPartialCondition(String conditionName) {
-        String sql = "SELECT * FROM patient p WHERE EXISTS (SELECT 1 FROM medical_condition mc WHERE mc.patient_id = p.id AND LOWER(mc.name) LIKE :conditionName)";
+    public Multi<Patient> findByPartialCondition(String conditionName) {
+        String query = """
+            SELECT * FROM patient p
+            WHERE EXISTS (
+                SELECT 1 FROM medical_condition mc
+                WHERE mc.patient_id = p.id AND LOWER(mc.name) LIKE ?
+            )
+        """;
 
-        Query query = entityManager.createNativeQuery(sql, Patient.class);
-        query.setParameter("conditionName", "%" + conditionName.toLowerCase() + "%");
+        return client.preparedQuery(query)
+                .execute(Tuple.of("%" + conditionName.toLowerCase() + "%"))
+                .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))
+                .onItem().transform(this::mapRowToPatient); // Map rows to Patient objects
+    }
 
-        return query.getResultList();
+    private Patient mapRowToPatient(Row row) {
+        Patient patient = new Patient();
+        patient.setId(row.getLong("id")); // Patient ID
+
+        Account account = new Account();
+        account.setId(row.getLong("account_id"));
+        patient.setAccount(account);
+
+        return patient;
     }
 }
 
