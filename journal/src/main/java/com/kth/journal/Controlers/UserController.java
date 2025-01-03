@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,9 +26,12 @@ public class UserController {
     @GetMapping("/recipients")
     public ResponseEntity<List<RecipientResponse>> getRecipients() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserEmail = auth.getName(); // Current authenticated user
+        Jwt jwt = (Jwt) auth.getPrincipal();
 
-        List<Account> recipients = userService.getRecipients(currentUserEmail);
+        // Get email
+        String loggedInEmail = jwt.getClaimAsString("email");
+
+        List<Account> recipients = userService.getRecipients(loggedInEmail);
         List<RecipientResponse> response = recipients.stream()
                 .map(account -> new RecipientResponse(account.getId(), account.getName(), account.getRole()))
                 .collect(Collectors.toList());

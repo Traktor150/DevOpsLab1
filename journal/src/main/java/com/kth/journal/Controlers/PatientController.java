@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +31,16 @@ public class PatientController {
     @GetMapping("/me")
     public ResponseEntity<PatientProfile> getPatientInfo() {
         // Retrieve the logged-in user's email
+        System.out.println("IN");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInEmail = auth.getName();
 
+        Jwt jwt = (Jwt) auth.getPrincipal();
+
+        // Get email
+        String loggedInEmail = jwt.getClaimAsString("email");
+
+//        String loggedInEmail = auth.getName();
+//        System.out.println("In: " + email);
         Optional<Account> account = userService.getUserByEmail(loggedInEmail);
 
         if(account.isEmpty()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -49,7 +57,10 @@ public class PatientController {
     @GetMapping("/all")
     public ResponseEntity<List<PatientResponse>> getAllPatients() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInEmail = auth.getName();
+        Jwt jwt = (Jwt) auth.getPrincipal();
+
+        // Get email
+        String loggedInEmail = jwt.getClaimAsString("email");
 
         Optional<Account> account = userService.getUserByEmail(loggedInEmail);
 
@@ -66,7 +77,10 @@ public class PatientController {
     @GetMapping("/single/{accountId}")
     public ResponseEntity<PatientProfile> getPatientById(@PathVariable Long accountId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInEmail = auth.getName();
+        Jwt jwt = (Jwt) auth.getPrincipal();
+
+        // Get email
+        String loggedInEmail = jwt.getClaimAsString("email");
 
         Optional<Account> account = userService.getUserByEmail(loggedInEmail);
 

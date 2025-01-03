@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
@@ -24,10 +25,13 @@ public class MessageController {
 
     private void isAuthorized(Long senderId) throws AccessDeniedException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserEmail = auth.getName(); // Current authenticated user
+        Jwt jwt = (Jwt) auth.getPrincipal();
+
+        // Get email
+        String loggedInEmail = jwt.getClaimAsString("email");
 
         Account sender = messageService.findAccountById(senderId);
-        if (!currentUserEmail.equals(sender.getEmail())) {
+        if (!loggedInEmail.equals(sender.getEmail())) {
             throw new AccessDeniedException("Unauthorized account.");
         }
     }

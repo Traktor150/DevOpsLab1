@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -28,7 +29,10 @@ public class ConditionController {
     public ResponseEntity<String> createNote(@Valid @RequestBody ConditionRequest request) {
         // Retrieve the logged-in user's email
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInEmail = auth.getName();
+        Jwt jwt = (Jwt) auth.getPrincipal();
+
+        // Get email
+        String loggedInEmail = jwt.getClaimAsString("email");
 
         // Fetch the practitioner linked to this account
         Optional<Account> account = userService.getUserByEmail(loggedInEmail);
