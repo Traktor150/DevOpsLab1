@@ -21,7 +21,7 @@ public class UserService implements UserServiceInterface {
     private final PasswordEncoder passwordEncoder;
 
     @Value("${keycloak.server.url}")
-    private String KEYCLOAK_SERVER_URL = "http://localhost:8085"; // Keycloak base URL
+    private String KEYCLOAK_SERVER_URL; // Keycloak base URL
     private final String REALM = "journal";
     private final String CLIENT_ID = "admin-cli";
     private final String ADMIN_USERNAME = "admin"; // Keycloak admin username
