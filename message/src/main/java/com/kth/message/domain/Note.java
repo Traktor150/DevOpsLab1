@@ -19,7 +19,7 @@ public class Note {
 
     @ManyToOne
     @JoinColumn(name = "practitioner_id", nullable = false)
-    private Practitioner practitioner; // Skapare av noteringen
+    private Practitioner practitioner; // creator of notes
 
     public Long getId() {
         return id;
